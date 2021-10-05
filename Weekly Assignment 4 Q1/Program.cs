@@ -23,12 +23,14 @@ namespace Weekly_Assignment_4_Q1
                 Console.WriteLine("5) Sleep Thread");
                 Console.WriteLine("6) Exit");
                 Console.WriteLine();
+                Console.Write("Enter choice: ");
 
                 int choice = Convert.ToInt32(Console.ReadLine());
                 switch (choice)
                 {
                     case 1:
                         Thread newThread = new Thread(()=> { CreateThread(); });
+                        newThread.IsBackground = true;
                         ThreadCollection.Add(newThread);
                         newThread.Start();
                         break;
@@ -57,8 +59,11 @@ namespace Weekly_Assignment_4_Q1
 
         public static void CreateThread()
         {
-            Console.WriteLine("Thread is being created!");
-                        
+            bool stopthread = true;
+            while (stopthread)
+            {
+                Thread.Sleep(3000);
+            }          
         }
 
         public static void DestroyThread(List<Thread> t)
@@ -75,25 +80,40 @@ namespace Weekly_Assignment_4_Q1
                     {
                         obj.Abort();
                         Console.WriteLine("ThreadID {0} has been destroyed!", obj.ManagedThreadId);
+                        Console.WriteLine();
                     }
                 }
                 else
                 {
                     Console.WriteLine("The ThreadID {0} you entered either did not exist or has been terminated.", ID);
+                    Console.WriteLine();
                 }
             }
         }
 
         public static void ViewRunningThreads(List<Thread> t) 
         {
-            foreach (Thread obj in t) 
+            if (t.Count != 0)
             {
-                Console.WriteLine("Thread name: {0}",obj.Name);
-                Console.WriteLine("Thread ID: {0}", obj.ManagedThreadId);
-                Console.WriteLine("Thread status: {0}", obj.IsAlive);
-                Console.WriteLine("Thread background: {0}", obj.IsBackground);
-                Console.WriteLine();
+                foreach (Thread obj in t)
+                {
+                    Console.WriteLine("Thread name: {0}", obj.Name);
+                    Console.WriteLine("Thread ID: {0}", obj.ManagedThreadId);
+                    Console.WriteLine("Thread is alive: {0}", obj.IsAlive);
+                    if (obj.IsAlive == true)
+                    {
+                        Console.WriteLine("Thread background: {0}", obj.IsBackground);
+                        Console.WriteLine();
+                    }
+                }
             }
+            else
+            {
+                Console.WriteLine("There are no threads running currently!");
+            }
+            
+            Console.WriteLine("Total number of threads running: " + t.Count);
+            Console.WriteLine();
         }
 
         public static void SleepThread(List<Thread> t)
@@ -111,7 +131,8 @@ namespace Weekly_Assignment_4_Q1
                     {
                         Console.WriteLine("ThreadID {0} has been found!", obj.ManagedThreadId);
                         Console.WriteLine("How long do you wish to sleep?(in seconds)");
-                        int time = Convert.ToInt32(Console.ReadLine());
+                        int time = (Convert.ToInt32(Console.ReadLine())) * 1000;
+
                         lock (obj)
                         {
                             Monitor.Wait(obj,time);
@@ -121,6 +142,7 @@ namespace Weekly_Assignment_4_Q1
                 else
                 {
                     Console.WriteLine("The ThreadID {0} you entered either did not exist or has been terminated.", ID);
+                    Console.WriteLine();
                 }
 
             }
